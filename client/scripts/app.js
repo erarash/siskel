@@ -1,35 +1,35 @@
 var Movie = Backbone.Model.extend({
-
   defaults: {
     like: true
   },
 
   toggleLike: function() {
-    // your code here
+    if (this.get("like") === true) {
+      return this.set("like", false);
+    } else {
+      return this.set("like", true);
+    }
   }
-
 });
 
 var Movies = Backbone.Collection.extend({
-
   model: Movie,
 
   initialize: function() {
-    // your code here
+    this.on("change", this.sort, this);
   },
 
-  comparator: 'title',
+  comparator: "title",
 
   sortByField: function(field) {
-    // your code here
+    this.comparator = field;
+    this.sort();
   }
-
 });
 
 var AppView = Backbone.View.extend({
-
   events: {
-    'click form input': 'handleClick'
+    "click form input": "handleClick"
   },
 
   handleClick: function(e) {
@@ -39,30 +39,30 @@ var AppView = Backbone.View.extend({
 
   render: function() {
     new MoviesView({
-      el: this.$('#movies'),
+      el: this.$("#movies"),
       collection: this.collection
     }).render();
   }
-
 });
 
 var MovieView = Backbone.View.extend({
-
-  template: _.template('<div class="movie"> \
+  template: _.template(
+    '<div class="movie"> \
                           <div class="like"> \
                             <button><img src="images/<%- like ? \'up\' : \'down\' %>.jpg"></button> \
                           </div> \
                           <span class="title"><%- title %></span> \
                           <span class="year">(<%- year %>)</span> \
                           <div class="rating">Fan rating: <%- rating %> of 10</div> \
-                        </div>'),
+                        </div>'
+  ),
 
   initialize: function() {
     // your code here
   },
 
   events: {
-    'click button': 'handleClick'
+    "click button": "handleClick"
   },
 
   handleClick: function() {
@@ -73,11 +73,9 @@ var MovieView = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
     return this.$el;
   }
-
 });
 
 var MoviesView = Backbone.View.extend({
-
   initialize: function() {
     // your code here
   },
@@ -88,8 +86,7 @@ var MoviesView = Backbone.View.extend({
   },
 
   renderMovie: function(movie) {
-    var movieView = new MovieView({model: movie});
+    var movieView = new MovieView({ model: movie });
     this.$el.append(movieView.render());
   }
-
 });
